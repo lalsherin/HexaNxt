@@ -1,12 +1,16 @@
 /**
- * Canonical site origin, resolved from the VITE_SITE_URL build-time variable.
+ * Canonical site origin, used to build absolute canonical and Open Graph URLs.
  *
- * Crawlers need absolute URLs for canonical and Open Graph tags, but the
- * production domain is deployment-specific, so it is never hardcoded here.
- * When the variable is unset (local dev, preview deploys), absoluteUrl falls
- * back to a relative path and the Open Graph URL/image tags are omitted.
+ * The production domain is now known and stable, so it is the default. It can
+ * still be overridden per environment with the VITE_SITE_URL build-time
+ * variable — useful for a staging domain — but no dashboard configuration is
+ * required for the live site to emit correct tags.
  */
-export const SITE_URL: string = (import.meta.env.VITE_SITE_URL ?? "").trim().replace(/\/+$/, "");
+const DEFAULT_SITE_URL = "https://www.hexanxt.com";
+
+export const SITE_URL: string = (import.meta.env.VITE_SITE_URL || DEFAULT_SITE_URL)
+  .trim()
+  .replace(/\/+$/, "");
 
 export function absoluteUrl(path: string): string {
   const suffix = path.startsWith("/") ? path : `/${path}`;
